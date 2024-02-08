@@ -1,0 +1,80 @@
+<project name="JavaExpressionEvaluator" default="build number" basedir=".">
+
+    <property name="dir.base" value="."/>
+
+    <property name="dir.dist" location="${basedir}/dist"/>
+    <property name="dir.javadoc" location="${basedir}/javadoc"/>
+    <property name="dir.lib" location="${basedir}/lib"/>
+    <property name="dir.src" location="${basedir}/src"/>
+
+    <property name="version.file" location="${dir.src}/be/lmenten/math/evaluator/ExpressionEvaluator.java"/>
+
+    <target name="build number">
+        <propertyfile file="build.properties">
+            <entry key="build.number" type="int" default="0" operation="+"/>
+        </propertyfile>
+        <property file="build.properties"/>
+
+        <tstamp>
+            <format property="build.date" pattern="yyyyMMdd"/>
+            <format property="build.time" pattern="HHmmss"/>
+        </tstamp>
+
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+int\s+VERSION_MAJOR\s+=\s+.*;"
+                       replace="private static final int VERSION_MAJOR = ${version.major};"
+                       byline="true"
+        />
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+int\s+VERSION_MINOR\s+=\s+.*;"
+                       replace="private static final int VERSION_MINOR = ${version.minor};"
+                       byline="true"
+        />
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+int\s+VERSION_SECURITY\s+=\s+.*;"
+                       replace="private static final int VERSION_SECURITY = ${version.security};"
+                       byline="true"
+        />
+
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+String\s+PRE_RELEASE_IDENTIFIER\s+=\s+&quot;.*&quot;;"
+                       replace="private static final String PRE_RELEASE_IDENTIFIER = &quot;${pre_release.identifier}&quot;;"
+                       byline="true"
+        />
+
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+int\s+BUILD_NUMBER\s+=\s+.*;"
+                       replace="private static final int BUILD_NUMBER = ${build.number};"
+                       byline="true"
+        />
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+String\s+BUILD_DATE\s+=\s+&quot;.*&quot;;"
+                       replace="private static final String BUILD_DATE = &quot;${build.date}&quot;;"
+                       byline="true"
+        />
+        <replaceregexp file="${version.file}"
+                       match="private\s+static\s+final\s+String\s+BUILD_TIME\s+=\s+&quot;.*&quot;;"
+                       replace="private static final String BUILD_TIME = &quot;${build.time}&quot;;"
+                       byline="true"
+        />
+    </target>
+
+    <target name="distribution">
+        <property  file="build.properties"/>
+        <property name="app.version" value="${version.major}.${version.minor}.${version.security}"/>
+        <property name="zipfile.name" value="jDungeonMaster-${app.version}-${pre_release.identifier}-build.${build.number}.zip"/>
+
+        <javadoc destdir="${dir.javadoc}" author="true" version="true" use="true" windowtitle="${ant.project.name}">
+            <packageset dir="${dir.src}" defaultexcludes="yes">
+                <include name="be/lmenten/math/evaluator/**"/>
+                <exclude name="be/lmenten/math/evaluator/grammar/**"/>
+            </packageset>
+
+            <doctitle><![CDATA[<h1>Java Expression Evaluator</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2022+ Laurent Menten. All Rights Reserved.</i>]]></bottom>
+            <link offline="true" href="https://docs.oracle.com/javase/21/docs/api/" packagelistLoc="C:\tmp"/>
+            <link href="https://docs.oracle.com/javase/21/docs/api/"/>
+        </javadoc>
+
+    </target>
+</project>
